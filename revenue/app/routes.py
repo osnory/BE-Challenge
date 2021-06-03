@@ -44,12 +44,12 @@ def index():
 @parameters_check
 def hourly(start: datetime, branch_id: str, **kwargs):
 
-    hours_breakdown = services.get_hourly_breakdown_for(start, branch_id)
+    hourly_breakdown = services.get_hourly_breakdown_for(start, branch_id)
     body = {
         "branch_id": branch_id,
         "start": start,
-        "hours_breakdown": hours_breakdown,
-        "total": sum(hours_breakdown.values()),
+        "hourly_breakdown": hourly_breakdown,
+        "total": sum(hourly_breakdown.values()),
     }
 
     return jsonify(data=body)

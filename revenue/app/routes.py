@@ -1,10 +1,12 @@
+import random
 from datetime import datetime
 from functools import wraps
 
 from flask import jsonify, request
 
-from revenue.app import app, db
+from revenue.app import app, date_utils, db
 from revenue.app.models import Receipt
+from revenue.app import services
 
 
 def parameters_check(f):
@@ -18,10 +20,9 @@ def parameters_check(f):
             error_msg = "missing_required args {}".format(",".join(list(missing_args)))
             return jsonify(error=error_msg), 400
 
-        date_format = "%d/%m/%Y"
         try:
-            start = datetime.strptime(existing_args["start"], date_format)
-            end = datetime.strptime(existing_args["end"], date_format)
+            start = date_utils.from_string(existing_args["start"])
+            end = date_utils.from_string(existing_args["end"])
             if start > end:
                 raise ValueError("start date must be lower than end date")
             branch_id = existing_args["branch_id"]
@@ -41,15 +42,33 @@ def index():
 
 @app.route("/hourly")
 @parameters_check
-def hourly(start: datetime, end: datetime, branch_id: str):
-    # TODO
-    return jsonify(msg="implement me")
+def hourly(start: datetime, branch_id: str, **kwargs):
+
+    hours_breakdown = services.get_hourly_breakdown_for(start, branch_id)
+    body = {
+        "branch_id": branch_id,
+        "start": start,
+        "hours_breakdown": hours_breakdown,
+        "total": sum(hours_breakdown.values()),
+    }
+
+    return jsonify(data=body)
 
 
 @app.route("/daily")
-def daily():
-    # TODO
-    return jsonify(msg="implement me")
+@parameters_check
+def daily(start: datetime, end: datetime, branch_id: str):
+    daily_breakdown = services.get_daily_breakdown_for(start, end, branch_id)
+    body = {
+        "branch_id": branch_id,
+        "start": start,
+        "end": end,
+        "daily_breakdown": daily_breakdown,
+        "total": sum(daily_breakdown.values()),
+
+    }
+
+    return jsonify(data=body)
 
 
 @app.route("/ingest")
@@ -58,18 +77,14 @@ def ingest():
     now = datetime.now()
     r = Receipt(
         external_id="???-{}".format(now.timestamp()),
-        brand_id="???".format(now),
+        branch_id="???",
         full_date=now,
         epoch_date=now.timestamp(),
+        value=random.random() * 100
     )
     db.session.add(r)
     db.session.commit()
 
     return jsonify(msg=r.as_dict())
 
-
-@app.route("/add")
-def add():
-    r = request.args
-    return jsonify(msg=r)
 

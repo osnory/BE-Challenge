@@ -142,5 +142,5 @@ We want to populate the data when setting up the application;
 #### Step 1 : Model
 Since the data is queried by hours or days we want to be able to quickly find the relevant rows
 
-brand_id - str | year - int| month- int | day - int | hour - int | full_date - datetime | total - float
+id - str | brand_id - str | year - int| month- int | day - int | hour - int | full_date - datetime | total - float
 

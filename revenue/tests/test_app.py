@@ -1,6 +1,7 @@
 import pytest
 
 from revenue.app import app
+from revenue.app import db
 
 
 @pytest.fixture(scope='session')
@@ -34,3 +35,15 @@ class TestRoutes:
 
         rv = test_client.get('/')
         assert {"hello": "Hello"} == rv.json
+
+    def test_no_qp_is_bad_request(self, test_client):
+        rv = test_client.get('/hourly')
+        assert rv.status == "400 BAD REQUEST"
+
+    def test_no_start_is_bad_request(self, test_client):
+        rv = test_client.get('/hourly?end=18/05/2020&branch_id=90')
+        assert rv.status == "400 BAD REQUEST"
+
+    def test_bad_date_format_is_bad_request(self, test_client):
+        rv = test_client.get('/hourly?start=18/05/202&end=18/05/2020&branch_id=90')
+        assert rv.status == "400 BAD REQUEST"

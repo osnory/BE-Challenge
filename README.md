@@ -127,3 +127,20 @@ And of course, we want to hear your thoughts and answer any questions you have.
 So that's that. How does it sound? A whole lot of details, we know !
 
 **Oh, and one last thing... best of luck! We're really happy you've decided to take part in the challenge, and we look forward to seeing your epic solution.** 😎
+
+
+## Steps
+### Plan
+Assume that the data need to be stored in a way that can support future requests (so cannot aggregate all data in db level);
+Also, we want to be able to quickly identify the rows that are relevant for the query 
+and be able to return data that would be as small as possible in size; 
+
+We also want to have validation for the end points and be able to test the correctness of the code
+
+We want to populate the data when setting up the application; 
+
+#### Step 1 : Model
+Since the data is queried by hours or days we want to be able to quickly find the relevant rows
+
+brand_id - str | year - int| month- int | day - int | hour - int | full_date - datetime | total - float
+

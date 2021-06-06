@@ -91,11 +91,10 @@ class TestHourly:
 
 
 def add_receipt(branch_id="?!?", full_date=b_day, value=100.0):
-    r = Receipt(
+    r = Receipt.create(
         external_id=str(uuid.uuid4()),
         branch_id=branch_id,
         full_date=full_date,
-        epoch_date=full_date.timestamp(),
         value=value,
     )
     db.session.add(r)

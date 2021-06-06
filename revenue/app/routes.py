@@ -4,14 +4,13 @@ from functools import wraps
 
 from flask import jsonify, request
 
-from revenue.app import app, date_utils, db
-from revenue.app.models import Receipt
+from revenue.app import app, date_utils, db, models
 from revenue.app import services
 
 
 def parameters_check(f):
     @wraps(f)
-    def endpoint(*args, **kwargs):
+    def endpoint():
         args = request.args
         required_args = "start", "end", "branch_id"
         existing_args = {k: args.get(k) for k in required_args if k in args}
@@ -75,12 +74,11 @@ def daily(start: datetime, end: datetime, branch_id: str):
 def ingest():
     from datetime import datetime
     now = datetime.now()
-    r = Receipt(
+    r = models.Receipt.create(
         external_id="???-{}".format(now.timestamp()),
         branch_id="???",
         full_date=now,
-        epoch_date=now.timestamp(),
-        value=random.random() * 100
+        value=random.random() * 100,
     )
     db.session.add(r)
     db.session.commit()

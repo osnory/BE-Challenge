@@ -1,8 +1,9 @@
+import datetime
 
-from datetime import datetime
+from sqlalchemy import func, sql, types
 
 from revenue.app.models import Receipt
-from revenue.app import date_utils
+from revenue.app import db, date_utils
 
 
 def get_daily_breakdown_for(start: datetime, end: datetime, branch_id: str):
@@ -14,17 +15,29 @@ def get_daily_breakdown_for(start: datetime, end: datetime, branch_id: str):
     :param branch_id: to which we total
     :return: dictionary in the format of
     """
-    s = start.replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
-    e = end.replace(day=end.day+1, hour=0, minute=0, second=0).timestamp()
+    s = start.replace(hour=0, minute=0, second=0, microsecond=0)
+    e = end.replace(day=end.day+1, hour=0, minute=0, second=0)
+    values = {"{}/{}/{}".format(d.day, d.month, d.year): 0.0 for d in date_utils.get_day_range(s, e)}
 
-    rs = get_receipts_for_range(s, e, branch_id)
+    # sqlite does not support concat func, so use + instead
+    q = db.session.query(
+        (
+                sql.expression.cast(Receipt.day_num, types.Unicode)
+                +
+                "/"
+                +
+                sql.expression.cast(Receipt.month_num, types.Unicode)
+                +
+                "/{}".format(start.year)
+        ).label("key"),
+        func.sum(Receipt.value),
+    )
+    q = q.filter(Receipt.branch_id == branch_id)
+    q = q.filter(Receipt.full_date.between(s, e))
+    q = q.group_by("key")
+    res = q.all()
 
-    values = {d: 0.0 for d in range(start.day, end.day+1)}
-
-    for date, value in rs:
-        values[date.day] += value
-
-    values = {date_utils.to_string(start.replace(day=k)): v for k, v in values.items()}
+    values.update({k: v for k, v in res})
 
     return values
 
@@ -37,32 +50,23 @@ def get_hourly_breakdown_for(start: datetime, branch_id: str):
     :param branch_id: to which we total
     :return: dictionary in the format of {0: 0.0, ...,  22: 101.40, 23: 0.0}
     """
-    s = start.replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
-    e = start.replace(hour=23, minute=59, second=59).timestamp()
-
-    rs = get_receipts_for_range(s, e, branch_id)
-
+    s = start.replace(hour=0, minute=0, second=0, microsecond=0)
+    e = start.replace(hour=23, minute=59, second=59)
     values = {i: 0.0 for i in range(0, 24)}
 
-    for date, value in rs:
-        values[date.hour] += value
+    q = db.session.query(
+        Receipt.hour_num,
+        func.sum(Receipt.value).label('hour_tots')
+    )
+    q = q.filter(Receipt.branch_id == branch_id)
+    q = q.filter(Receipt.full_date.between(s, e))
+    q = q.group_by(Receipt.hour_num)
+    res = q.all()
+
+    # result set is a list of tuples in the format [(17, 90.86222314867058)]
+    # So fill the values map
+    values.update(
+        {hour_num: value for hour_num, value in res}
+    )
 
     return values
-
-
-def get_receipts_for_range(start: float, end: float, branch_id: str):
-    """
-    Getting the receipts for the given range from the DB.
-
-    :param start: the start epoch time
-    :param end: the end epoch time
-    :param branch_id: the branch id
-    :return: list of tuples where each tuple is (date : datetime, value: float)
-    """
-
-    q = Receipt.query
-    q = q.filter(Receipt.branch_id == branch_id)
-    q = q.filter(Receipt.epoch_date.between(start, end))
-    q = q.with_entities(Receipt.full_date, Receipt.value)
-
-    return q.all()

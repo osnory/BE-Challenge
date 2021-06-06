@@ -1,22 +1,40 @@
+from datetime import datetime
+
 from revenue.app import db
 
 
 class Receipt(db.Model):
+    """
+        An Entry has the external receipt id for reference
+        and the full date for querying and flexibility to support other use cases if required
+        It also has brand_id which is used for querying
+        It has 3 fields that we use for grouping, namely month, day, hour
+    """
 
     __tablename__ = 'receipts'
 
-    """
-    An Entry has the external receipt id for reference
-    and the full date for flexibility to support other use cases if required
-    It also has brand_id which is used for querying 
-    and the epoch date so a range selection can be used
-    """
-    id = db.Column(db.Integer, primary_key=True)
+    @classmethod
+    def create(cls, external_id: str, branch_id: str, full_date: datetime, value: float):
+        return cls(
+            external_id="{}-{}".format(branch_id, external_id),
+            branch_id=branch_id,
+            full_date=full_date,
+            value=value,
+            month_num=full_date.month,
+            day_num=full_date.day,
+            hour_num=full_date.hour,
+    )
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     external_id = db.Column(db.String(64), unique=True, nullable=False)
     branch_id = db.Column(db.String(64), index=True, nullable=False)
     full_date = db.Column(db.DateTime, nullable=False)
-    epoch_date = db.Column(db.BigInteger, index=True, nullable=False)
     value = db.Column(db.Float, nullable=False)
+
+    # These are derived values and used to aggregate on the DB level
+    month_num = db.Column(db.Integer, index=True)
+    day_num = db.Column(db.Integer, index=True)
+    hour_num = db.Column(db.Integer, index=True)
 
     def _fields(self):
         return [(c.name, getattr(self, c.name)) for c in self.__table__.columns]

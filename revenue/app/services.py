@@ -1,9 +1,11 @@
+import collections
 import datetime
 
 from sqlalchemy import func, sql, types
 
 from revenue.app.models import Receipt
-from revenue.app import db, date_utils
+from revenue.app import db
+from revenue.app.date_utils import date_to_key, get_day_range
 
 
 def get_daily_breakdown_for(start: datetime, end: datetime, branch_id: str):
@@ -16,8 +18,10 @@ def get_daily_breakdown_for(start: datetime, end: datetime, branch_id: str):
     :return: dictionary in the format of
     """
     s = start.replace(hour=0, minute=0, second=0, microsecond=0)
-    e = end.replace(day=end.day+1, hour=0, minute=0, second=0)
-    values = {"{}/{}/{}".format(d.day, d.month, d.year): 0.0 for d in date_utils.get_day_range(s, e)}
+    e = end.replace(day=end.day, hour=23, minute=59, second=59)
+    values = collections.OrderedDict(
+        {date_to_key(d): 0.0 for d in get_day_range(s, e)}
+    )
 
     # sqlite does not support concat func, so use + instead
     q = db.session.query(
@@ -28,7 +32,9 @@ def get_daily_breakdown_for(start: datetime, end: datetime, branch_id: str):
                 +
                 sql.expression.cast(Receipt.month_num, types.Unicode)
                 +
-                "/{}".format(start.year)
+                "/"
+                +
+                sql.expression.cast(Receipt.year_num, types.Unicode)
         ).label("key"),
         func.sum(Receipt.value),
     )

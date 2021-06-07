@@ -20,10 +20,11 @@ class Receipt(db.Model):
             branch_id=branch_id,
             full_date=full_date,
             value=value,
+            year_num=full_date.year,
             month_num=full_date.month,
             day_num=full_date.day,
             hour_num=full_date.hour,
-    )
+        )
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     external_id = db.Column(db.String(64), unique=True, nullable=False)
@@ -32,6 +33,7 @@ class Receipt(db.Model):
     value = db.Column(db.Float, nullable=False)
 
     # These are derived values and used to aggregate on the DB level
+    year_num = db.Column(db.Integer, index=True)
     month_num = db.Column(db.Integer, index=True)
     day_num = db.Column(db.Integer, index=True)
     hour_num = db.Column(db.Integer, index=True)

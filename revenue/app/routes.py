@@ -1,10 +1,9 @@
-import random
 from datetime import datetime
 from functools import wraps
 
 from flask import jsonify, request
 
-from revenue.app import app, date_utils, db, models
+from revenue.app import app, date_utils, db, loader, models
 from revenue.app import services
 
 
@@ -20,8 +19,8 @@ def parameters_check(f):
             return jsonify(error=error_msg), 400
 
         try:
-            start = date_utils.from_string(existing_args["start"])
-            end = date_utils.from_string(existing_args["end"])
+            start = date_utils.from_api_string(existing_args["start"])
+            end = date_utils.from_api_string(existing_args["end"])
             if start > end:
                 raise ValueError("start date must be lower than end date")
             branch_id = existing_args["branch_id"]
@@ -72,17 +71,13 @@ def daily(start: datetime, end: datetime, branch_id: str):
 
 @app.route("/ingest")
 def ingest():
-    from datetime import datetime
-    now = datetime.now()
-    r = models.Receipt.create(
-        external_id="???-{}".format(now.timestamp()),
-        branch_id="???",
-        full_date=now,
-        value=random.random() * 100,
-    )
-    db.session.add(r)
-    db.session.commit()
+    db.drop_all()
+    db.create_all()
+    item_stream = loader.get_csv_stream(loader.DATA_FILE)
+    receipt_stream = loader.get_receipt_stream(item_stream)
+    loader.load_receipts(db, receipt_stream, 1000)
 
-    return jsonify(msg=r.as_dict())
+    records = db.session.query(models.Receipt).count()
+    return jsonify(records=records)
 
 

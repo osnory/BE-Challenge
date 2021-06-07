@@ -2,16 +2,26 @@ import datetime
 from datetime import datetime as dt
 
 
-DATE_FORMAT = "%d/%m/%Y"
+API_DATE_FORMAT = "%d/%m/%Y"
+CSV_DATE_FORMAT = "%d/%m/%y %H:%M"
 
 
-def from_string(date: str):
+def from_api_string(date: str):
     """
 
-    :param date: in DATE_FORMAT format, such as 03/06/2020
+    :param date: in format as comes from api, such as 03/06/2020
     :return: datetime object.
     """
-    return dt.strptime(date, DATE_FORMAT)
+    return dt.strptime(date, API_DATE_FORMAT)
+
+
+def from_csv_format(date: str):
+    """
+
+        :param date: in DATE_FORMAT format, such as 03/06/2020
+        :return: datetime object.
+    """
+    return dt.strptime(date, CSV_DATE_FORMAT)
 
 
 def to_string(date: dt):
@@ -21,7 +31,7 @@ def to_string(date: dt):
     :param date: to conver
     :return: into DATE_FORMAT format, such as 03/06/2020
     """
-    return date.strftime(DATE_FORMAT)
+    return date.strftime(API_DATE_FORMAT)
 
 
 def get_day_range(start: dt, end: dt):
@@ -32,3 +42,12 @@ def get_day_range(start: dt, end: dt):
     :return: inclusive dates for the range between start and end
     """
     return [start + datetime.timedelta(days=i) for i in range((end - start).days + 1)]
+
+
+def date_to_key(d: dt):
+    """
+
+    :param d: date object
+    :return: string key from the day, month and year
+    """
+    return "{}/{}/{}".format(d.day, d.month, d.year)

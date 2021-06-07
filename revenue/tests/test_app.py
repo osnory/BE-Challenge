@@ -53,7 +53,7 @@ class TestValidation:
         assert rv.status == "400 BAD REQUEST"
 
 
-b_day = date_utils.from_string("26/03/2021")
+b_day = date_utils.from_api_string("26/03/2021")
 
 
 class TestHourly:

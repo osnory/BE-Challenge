@@ -5,19 +5,19 @@ from unittest import TestCase
 from revenue.app import loader
 
 THIS_DIR = path.dirname(__file__)
-GOOD_DATA_FILE = path.join(THIS_DIR, "data", "data.csv.zip")
+SAMPLE_DATA_FILE = path.join(THIS_DIR, "data", "sample_data.csv")
 
 
 class TestLoader(TestCase):
     def test_item_stream(self):
-        stream = loader.get_csv_stream_zipped(GOOD_DATA_FILE)
+        stream = loader.get_csv_stream(SAMPLE_DATA_FILE)
         num_lines = len([_ for _ in stream])
         self.assertEqual(num_lines, 8)
 
     def test_receipt_stream(self):
         s = loader.get_receipt_stream(
-            loader.get_csv_stream_zipped(
-                GOOD_DATA_FILE
+            loader.get_csv_stream(
+                SAMPLE_DATA_FILE
             )
         )
         receipts = [r for r in s]

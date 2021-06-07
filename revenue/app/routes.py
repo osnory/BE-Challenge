@@ -3,33 +3,17 @@ from functools import wraps
 
 from flask import jsonify, request
 
-from revenue.app import app, date_utils, db, loader, models
+from revenue.app import app, date_utils, db, errors, loader, models, validations
 from revenue.app import services
 
 
-def parameters_check(f):
+def error_handler(f):
     @wraps(f)
-    def endpoint():
-        args = request.args
-        required_args = "start", "end", "branch_id"
-        existing_args = {k: args.get(k) for k in required_args if k in args}
-        if len(existing_args) < len(required_args):
-            missing_args = set(required_args) - existing_args.keys()
-            error_msg = "missing_required args {}".format(",".join(list(missing_args)))
-            return jsonify(error=error_msg), 400
-
+    def endpoint(*args, **kwargs):
         try:
-            start = date_utils.from_api_string(existing_args["start"])
-            end = date_utils.from_api_string(existing_args["end"])
-            if start > end:
-                raise ValueError("start date must be lower than end date")
-            branch_id = existing_args["branch_id"]
-            if not branch_id:
-                raise ValueError("branch id cannot be empty")
-        except ValueError as e:
-            return jsonify(error=str(e)), 400
-        else:
-            return f(start=start, end=end, branch_id=branch_id)
+            return f(*args, **kwargs)
+        except errors.HttpError as he:
+            return jsonify(error=he.msg), he.error_code
     return endpoint
 
 
@@ -39,13 +23,14 @@ def index():
 
 
 @app.route("/hourly")
-@parameters_check
-def hourly(start: datetime, branch_id: str, **kwargs):
+@error_handler
+def hourly():
+    hourly_params = validations.validate_request_params_hourly(request.args)
+    hourly_breakdown = services.get_hourly_breakdown_for(hourly_params)
 
-    hourly_breakdown = services.get_hourly_breakdown_for(start, branch_id)
     body = {
-        "branch_id": branch_id,
-        "start": start,
+        "branch_id": hourly_params.branch_id,
+        "start": hourly_params.start,
         "hourly_breakdown": hourly_breakdown,
         "total": sum(hourly_breakdown.values()),
     }
@@ -54,13 +39,14 @@ def hourly(start: datetime, branch_id: str, **kwargs):
 
 
 @app.route("/daily")
-@parameters_check
-def daily(start: datetime, end: datetime, branch_id: str):
-    daily_breakdown = services.get_daily_breakdown_for(start, end, branch_id)
+@error_handler
+def daily():
+    daily_params = validations.validate_request_params_daily(request.args)
+    daily_breakdown = services.get_daily_breakdown_for(daily_params)
     body = {
-        "branch_id": branch_id,
-        "start": start,
-        "end": end,
+        "branch_id": daily_params.branch_id,
+        "start": daily_params.start,
+        "end": daily_params.end,
         "daily_breakdown": daily_breakdown,
         "total": sum(daily_breakdown.values()),
 

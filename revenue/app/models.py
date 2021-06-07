@@ -1,3 +1,4 @@
+from collections import namedtuple
 from datetime import datetime
 
 from revenue.app import db
@@ -47,3 +48,8 @@ class Receipt(db.Model):
 
     def as_dict(self):
         return dict(self._fields())
+
+
+
+HourlyParams = namedtuple("HourlyParams", "start, branch_id")
+DailyParams = namedtuple("DailyParams", "start, end, branch_id")

@@ -4,7 +4,7 @@ import logging
 from csv import DictReader
 from os import path
 
-from revenue.app import constants, date_utils, models
+from revenue.app import validations, date_utils, models
 
 THIS_DIR = path.dirname(__file__)
 BASE_DIR = path.dirname(path.dirname(THIS_DIR))
@@ -22,7 +22,7 @@ def csv_item_to_receipt(item):
     :return: Receipt object
     """
     branch_name = item["Company Name"]
-    branch_id = constants.get_brand_id(branch_name)
+    branch_id = validations.get_brand_id(branch_name)
     if branch_id is None:
         raise ValueError("branch id cannot be found for '{}'".format(branch_name))
 
@@ -71,8 +71,8 @@ def get_receipt_stream(item_stream):
 
 def load_receipts(db, receipt_stream, commit_size):
     """
-    methodd to take a reciept stream and injects it into the DB
-    
+    method to take a receipt stream and injects it into the DB
+
     :param db:
     :param receipt_stream:
     :param commit_size:

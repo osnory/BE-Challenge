@@ -3,6 +3,7 @@ import uuid
 
 from revenue.app import app, date_utils, db
 from revenue.app.models import Receipt
+from revenue.app.validations import BRANCH_IDS
 
 
 @pytest.fixture(scope='session')
@@ -41,22 +42,28 @@ class TestValidation:
         assert rv.status == "400 BAD REQUEST"
 
     def test_no_start_is_bad_request(self, test_client):
-        rv = test_client.get('/hourly?end=18/05/2020&branch_id=90')
+        rv = test_client.get('/hourly?end=18/05/2020&branch_id=352h67i328fh')
         assert rv.status == "400 BAD REQUEST"
 
     def test_bad_date_format_is_bad_request(self, test_client):
-        rv = test_client.get('/hourly?start=18/05/202&end=18/05/2020&branch_id=90')
+        rv = test_client.get('/hourly?start=18/05/202&end=18/05/2020&branch_id=352h67i328fh')
         assert rv.status == "400 BAD REQUEST"
 
     def test_start_cannot_be_after_end(self, test_client):
-        rv = test_client.get('/hourly?start=18/05/2020&end=17/05/2020&branch_id=90')
+        rv = test_client.get('/daily?start=18/05/2020&end=17/05/2020&branch_id=352h67i328fh')
         assert rv.status == "400 BAD REQUEST"
+
+    def test_no_such_branch_id(self, test_client):
+        rv = test_client.get('/hourly?start=18/05/2020&end=19/05/2020&branch_id=?')
+        assert rv.status == "404 NOT FOUND"
 
 
 b_day = date_utils.from_api_string("26/03/2021")
 
 
 class TestHourly:
+
+    BRANCH_IDS.add("?!?")
 
     def test_hourly_empty(self, test_client):
         rv = test_client.get('/hourly?start=26/03/2021&end=26/03/2021&branch_id=?!?')

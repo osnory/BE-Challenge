@@ -1,10 +1,13 @@
-from datetime import datetime
+import logging
+
 from functools import wraps
 
 from flask import jsonify, request
 
-from revenue.app import app, date_utils, db, errors, loader, models, validations
+from revenue.app import app, db, errors, loader, models, validations
 from revenue.app import services
+
+logger = logging.getLogger(__name__)
 
 
 def error_handler(f):
@@ -14,6 +17,10 @@ def error_handler(f):
             return f(*args, **kwargs)
         except errors.HttpError as he:
             return jsonify(error=he.msg), he.error_code
+        except Exception as e:
+            logger.error(str(e))
+            return jsonify(error="Sorry - unexpected error occurred"), 500
+
     return endpoint
 
 

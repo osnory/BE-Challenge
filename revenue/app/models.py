@@ -50,6 +50,8 @@ class Receipt(db.Model):
         return dict(self._fields())
 
 
-
+"""
+Models to hold validated request parameters.  
+"""
 HourlyParams = namedtuple("HourlyParams", "start, branch_id")
 DailyParams = namedtuple("DailyParams", "start, end, branch_id")

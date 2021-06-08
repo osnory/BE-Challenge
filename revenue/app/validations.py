@@ -11,7 +11,7 @@ BRANCH_IDS = set(BRANCH_NAMES_TO_IDS.values())
 
 def get_brand_id(brand_name: str):
     """
-    Idealy this would come from the DB
+    Ideally this would come from the DB
 
     :param brand_name: as appears on the csv data dump
     :return: brand id as it would appear in the DB
@@ -51,7 +51,7 @@ def validate_date(date_str: str):
 
 def validate_branch_id(branch_id: str):
     if branch_id not in BRANCH_IDS:
-        raise errors.NotFound("branch id {} unknown. Use any of {}".format(branch_id, BRANCH_IDS))
+        raise errors.NotFound("branch id '{}' is unknown. Use any of {}".format(branch_id, BRANCH_IDS))
     return branch_id
 
 

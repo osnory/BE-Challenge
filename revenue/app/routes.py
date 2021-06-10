@@ -4,13 +4,17 @@ from functools import wraps
 
 from flask import jsonify, request
 
-from revenue.app import app, db, errors, loader, models, validations
-from revenue.app import services
+from revenue.app import app, db, errors, loader, models, services, validations
 
 logger = logging.getLogger(__name__)
 
 
 def error_handler(f):
+    """
+    Wraps function f with HTTP error handling codes and messages
+    :param f: end point function
+    :return: f` with error handling functionality added to f
+    """
     @wraps(f)
     def endpoint(*args, **kwargs):
         try:
@@ -19,7 +23,8 @@ def error_handler(f):
             return jsonify(error=he.msg), he.error_code
         except Exception as e:
             logger.error(str(e))
-            return jsonify(error="Sorry - unexpected error occurred"), 500
+            msg = "Unexpected error occurred. See logs for detail"
+            return jsonify(error=msg), 500
 
     return endpoint
 
@@ -32,6 +37,10 @@ def index():
 @app.route("/hourly")
 @error_handler
 def hourly():
+    """
+
+    :return: hourly breakdown for the given date and branch id
+    """
     hourly_params = validations.validate_request_params_hourly(request.args)
     hourly_breakdown = services.get_hourly_breakdown_for(hourly_params)
 
@@ -48,6 +57,10 @@ def hourly():
 @app.route("/daily")
 @error_handler
 def daily():
+    """
+
+    :return: daily breakdown for the given date range (incl, incl).
+    """
     daily_params = validations.validate_request_params_daily(request.args)
     daily_breakdown = services.get_daily_breakdown_for(daily_params)
     body = {
@@ -64,6 +77,7 @@ def daily():
 
 @app.route("/ingest")
 def ingest():
+    # TODO - add as a flask action
     db.drop_all()
     db.create_all()
     item_stream = loader.get_csv_stream(loader.DATA_FILE)

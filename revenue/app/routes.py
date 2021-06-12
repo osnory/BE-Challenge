@@ -42,6 +42,7 @@ def hourly():
     :return: hourly breakdown for the given date and branch id
     """
     hourly_params = validations.validate_request_params_hourly(request.args)
+    branch_id_exists_or_404(hourly_params.branch_id)
     hourly_breakdown = services.get_hourly_breakdown_for(hourly_params)
 
     body = {
@@ -62,6 +63,7 @@ def daily():
     :return: daily breakdown for the given date range (incl, incl).
     """
     daily_params = validations.validate_request_params_daily(request.args)
+    branch_id_exists_or_404(daily_params.branch_id)
     daily_breakdown = services.get_daily_breakdown_for(daily_params)
     body = {
         "branch_id": daily_params.branch_id,
@@ -80,11 +82,18 @@ def ingest():
     # TODO - add as a flask action
     db.drop_all()
     db.create_all()
-    item_stream = loader.get_csv_stream(loader.DATA_FILE)
-    receipt_stream = loader.get_receipt_stream(item_stream)
-    loader.load_receipts(db, receipt_stream, 1000)
+    loader.load_data(db, commit_size=1000)
 
     records = db.session.query(models.Receipt).count()
     return jsonify(records=records)
+
+
+def branch_id_exists_or_404(branch_id: str):
+    exists = services.brand_id_exists(branch_id)
+    if not exists:
+        brand_ids = services.get_all_brand_ids()
+        raise errors.NotFound("branch id '{}' is unknown. Use any of {}".format(branch_id, brand_ids))
+    return branch_id
+
 
 

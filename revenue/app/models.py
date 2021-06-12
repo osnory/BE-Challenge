@@ -50,8 +50,23 @@ class Receipt(db.Model):
         return dict(self._fields())
 
 
+class BrandMapping(db.Model):
+    """
+    Holds all brand names to ids mappings
+    """
+
+    @classmethod
+    def from_id_to_name(cls, _id, _name):
+        return cls(id=_id, name=_name)
+
+    id = db.Column(db.String(64), primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True, nullable=False)
+
+
+
+
 """
-Models to hold validated request parameters.  
+Models to hold validated request parameters.
 """
 HourlyParams = namedtuple("HourlyParams", "start, branch_id")
 DailyParams = namedtuple("DailyParams", "start, end, branch_id")

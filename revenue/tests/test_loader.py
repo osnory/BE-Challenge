@@ -18,7 +18,8 @@ class TestLoader(TestCase):
         s = loader.get_receipt_stream(
             loader.get_csv_stream(
                 SAMPLE_DATA_FILE
-            )
+            ),
+            loader.BRANCH_NAMES_TO_IDS,
         )
         receipts = [r for r in s]
         self.assertEqual(len(receipts), 8)
@@ -30,7 +31,8 @@ class TestLoader(TestCase):
         s = loader.get_receipt_stream(
             (
                 {},
-             )
+             ),
+            loader.BRANCH_NAMES_TO_IDS
         )
         receipts = [r for r in s]
         self.assertEqual(len(receipts), 0)
@@ -39,7 +41,8 @@ class TestLoader(TestCase):
         s = loader.get_receipt_stream(
             (
                 {"Receipt ID": "111", "Company Name": "Nory Taco", "Finalized Date": "23/06/2", "Total": "20.34"},
-             )
+             ),
+            loader.BRANCH_NAMES_TO_IDS
         )
         receipts = [r for r in s]
         self.assertEqual(len(receipts), 0)
@@ -48,7 +51,8 @@ class TestLoader(TestCase):
         s = loader.get_receipt_stream(
             (
                 {"Receipt ID": "111", "Company Name": "Nory", "Finalized Date": "23/06/21 17:09", "Total": "20.34"},
-             )
+             ),
+            loader.BRANCH_NAMES_TO_IDS
         )
         receipts = [r for r in s]
         self.assertEqual(len(receipts), 0)

@@ -1,9 +1,8 @@
 import pytest
 import uuid
 
-from revenue.app import app, date_utils, db
+from revenue.app import app, date_utils, db, loader
 from revenue.app.models import Receipt
-from revenue.app.validations import BRANCH_IDS
 
 
 @pytest.fixture(scope='session')
@@ -30,6 +29,12 @@ def test_client(test_app):
 
     app_context.push()
 
+    brand_mappings = {
+        "?!?": "?!?",
+        "NS": "352h67i328fh",
+    }
+    loader.load_brand_name_mappings(db, brand_mappings)
+
     yield test_app.test_client()
 
     db.session.remove()
@@ -37,6 +42,7 @@ def test_client(test_app):
 
 
 class TestValidation:
+
     def test_no_qp_is_bad_request(self, test_client):
         rv = test_client.get('/hourly')
         assert rv.status == "400 BAD REQUEST"
@@ -62,8 +68,6 @@ b_day = date_utils.from_api_string("26/03/2021")
 
 
 class TestHourly:
-
-    BRANCH_IDS.add("?!?")
 
     def test_hourly_empty(self, test_client):
         rv = test_client.get('/hourly?start=26/03/2021&end=26/03/2021&branch_id=?!?')
@@ -106,4 +110,7 @@ def add_receipt(branch_id="?!?", full_date=b_day, value=100.0):
     )
     db.session.add(r)
     db.session.commit()
+
+
+
 

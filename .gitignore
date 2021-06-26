@@ -1,5 +1,7 @@
 # App
 revenue/migrations/*
+revenue/api/revenue.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

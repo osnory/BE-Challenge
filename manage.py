@@ -5,8 +5,8 @@ from revenue.api import app, db
 cli = FlaskGroup(create_app=lambda x: app)
 
 
-@cli.command("recreate_db")
-def recreate_db():
+@cli.command("create_db")
+def create_db():
     db.drop_all()
     db.create_all()
     db.session.commit()

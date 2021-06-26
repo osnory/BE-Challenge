@@ -1,14 +1,15 @@
 import pytest
 import uuid
 
-from revenue.app import app, date_utils, db, loader
-from revenue.app.models import Receipt
+from revenue.api import app, db
+from revenue.utils import loader, date_utils
+from revenue.api.models import Receipt
 
 
 @pytest.fixture(scope='session')
 def test_app():
     """
-    Creates an instance of the app.
+    Creates an instance of the api.
 
     session scope
     """

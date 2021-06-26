@@ -2,7 +2,7 @@
 from os import path
 from unittest import TestCase
 
-from revenue.app import loader
+from revenue.utils import loader
 
 THIS_DIR = path.dirname(__file__)
 SAMPLE_DATA_FILE = path.join(THIS_DIR, "data", "sample_data.csv")

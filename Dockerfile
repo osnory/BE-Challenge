@@ -11,7 +11,7 @@ RUN pip install -r /tmp/requirements/prod.txt && rm -rf /tmp/requirements
 
 # copy project
 # ADD revenue /opt/revenue
-ADD revenue/app /opt/revenue/app
+ADD revenue/api /opt/revenue/app
 
 
 ENV PYTHONPATH=/opt/revenue

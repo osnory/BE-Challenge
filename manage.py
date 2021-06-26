@@ -6,18 +6,12 @@ from revenue.utils import loader
 cli = FlaskGroup(create_app=lambda x: app)
 
 
-@cli.command("create_db")
-def create_db():
-    """ Created DB """
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
-    print("DBs created")
-
-
 @cli.command("seed_db")
 def seed_db():
     """Seeds the database."""
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
     loader.load_data(db)
     print("DB Seeded")
 

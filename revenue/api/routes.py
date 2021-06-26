@@ -32,7 +32,7 @@ def error_handler(f):
 
 @app.route("/")
 def index():
-    return jsonify(hello="Hello")
+    return jsonify(hello="Hello. Use the Daily and Hourly end points to see some data")
 
 
 @app.route("/hourly")
@@ -76,17 +76,6 @@ def daily():
     }
 
     return jsonify(data=body)
-
-
-@app.route("/ingest")
-def ingest():
-    # TODO - add as a flask action
-    db.drop_all()
-    db.create_all()
-    loader.load_data(db, commit_size=1000)
-
-    records = db.session.query(models.Receipt).count()
-    return jsonify(records=records)
 
 
 def branch_id_exists_or_404(branch_id: str):

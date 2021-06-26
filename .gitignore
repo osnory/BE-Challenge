@@ -1,5 +1,5 @@
 # App
-revenue/migrations/*
+migrations/*
 revenue/api/revenue.db
 
 # Byte-compiled / optimized / DLL files

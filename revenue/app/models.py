@@ -34,10 +34,10 @@ class Receipt(db.Model):
     value = db.Column(db.Float, nullable=False)
 
     # These are derived values and used to aggregate on the DB level
-    year_num = db.Column(db.Integer, index=True)
-    month_num = db.Column(db.Integer, index=True)
-    day_num = db.Column(db.Integer, index=True)
-    hour_num = db.Column(db.Integer, index=True)
+    year_num = db.Column(db.Integer, index=True, nullable=False)
+    month_num = db.Column(db.Integer, index=True, nullable=False)
+    day_num = db.Column(db.Integer, index=True, nullable=False)
+    hour_num = db.Column(db.Integer, index=True, nullable=False)
 
     def _fields(self):
         return [(c.name, getattr(self, c.name)) for c in self.__table__.columns]
@@ -61,8 +61,6 @@ class BrandMapping(db.Model):
 
     id = db.Column(db.String(64), primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True, nullable=False)
-
-
 
 
 """

@@ -89,11 +89,13 @@ def ingest():
 
 
 def branch_id_exists_or_404(branch_id: str):
-    exists = services.brand_id_exists(branch_id)
-    if not exists:
-        brand_ids = services.get_all_brand_ids()
-        raise errors.NotFound("branch id '{}' is unknown. Use any of {}".format(branch_id, brand_ids))
-    return branch_id
+    if services.brand_id_exists(branch_id):
+        return branch_id
 
-
-
+    # Oh No
+    raise errors.NotFound(
+        "branch id '{}' is unknown. Use any of {}".format(
+            branch_id,
+            services.get_all_brand_ids(),
+        )
+    )

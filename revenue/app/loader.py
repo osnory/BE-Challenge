@@ -42,7 +42,7 @@ def get_receipt_stream(item_stream, brand_mappings):
         try:
             r = csv_item_to_receipt(item, brand_mappings)
             good += 1
-            logger.info("Good Record #{}. Receipt ={}".format(good, r))
+            logger.debug("Good Record #{}. Receipt ={}".format(good, r))
             yield r
         except (ValueError, KeyError) as e:
             bad += 1

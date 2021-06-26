@@ -12,3 +12,4 @@ migrate = Migrate(app, db)
 from revenue.app.models import Receipt
 from revenue.app import routes
 
+

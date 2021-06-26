@@ -14,6 +14,9 @@ ADD revenue/ /opt/revenue
 ADD app.py /opt/
 ADD manage.py /opt/
 
+# copy the data files
+ADD data/ /opt/data
+
 ENV PYTHONPATH=/opt
 EXPOSE 5000
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "manage:app"]

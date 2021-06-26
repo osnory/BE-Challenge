@@ -10,6 +10,7 @@ from revenue.utils import date_utils
 THIS_DIR = path.dirname(__file__)
 BASE_DIR = path.dirname(path.dirname(THIS_DIR))
 DATA_FILE = path.join(BASE_DIR, "data", "data.csv")
+
 BRANCH_NAMES_TO_IDS = {
     "Nory Sushi": "352h67i328fh",
     "Nory Pizza": "345hngydkgs",

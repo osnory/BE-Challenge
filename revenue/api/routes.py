@@ -4,8 +4,7 @@ from functools import wraps
 
 from flask import jsonify, request
 
-from revenue.api import app, db, errors, models, services, validations
-from revenue.utils import loader
+from revenue.api import app, errors, services, validations
 
 logger = logging.getLogger(__name__)
 

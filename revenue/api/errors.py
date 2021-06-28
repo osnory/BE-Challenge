@@ -1,4 +1,12 @@
 class HttpError(Exception):
+    """
+
+    Main Error Class for Http Related Errors
+
+    An HTTP error always has an Http status code associated with it
+
+
+    """
 
     def __init__(self, msg, error_code):
         super().__init__(msg)

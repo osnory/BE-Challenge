@@ -20,7 +20,7 @@ def error_handler(f):
         try:
             return f(*args, **kwargs)
         except errors.HttpError as he:
-            return jsonify(error=he.msg), he.error_code
+            return jsonify(error=str(he)), he.error_code
         except Exception as e:
             logger.error(str(e))
             msg = "Unexpected error occurred. See logs for detail"

@@ -31,7 +31,10 @@ def error_handler(f):
 
 @app.route("/")
 def index():
-    return jsonify(hello="Hello. Use the Daily and Hourly end points to see some data")
+    return jsonify(
+        hello="Hello!"
+              "Please Use the Daily and Hourly end points to see some data"
+    )
 
 
 @app.route("/hourly")

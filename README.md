@@ -5,6 +5,24 @@
     />
 </p>
 
+## Run
+### dev env
+Prerequisite: 
+ - python3
+ - mkvirtualenvwrapper
+
+Run  
+`` ./local.sh``
+
+### docker env
+Prerequisite: 
+  - Docker
+  - Docker Compose 
+
+Run
+
+``./make.sh``
+
 ## Introduction ## 
 
 Congratulations on making it to the challenge stage of the interview process! 
@@ -129,11 +147,4 @@ So that's that. How does it sound? A whole lot of details, we know !
 **Oh, and one last thing... best of luck! We're really happy you've decided to take part in the challenge, and we look forward to seeing your epic solution.** 😎
 
 
-## Run
-### dev env
-Prerequisite: python3, mkvirtualenvwrapper
-Run `` ./local.sh``
 
-### docker env
-Prerequisite: Docker, Docker Compose 
-Run: ``./make.sh``

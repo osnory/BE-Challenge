@@ -24,11 +24,20 @@ Run
 ``./make.sh``
 
 
-## Webserver structure
+## Webserver Structure
 
 <p align="left">
     <img alt="Web Server Structure"
         src="Dataflows.jpg"
+    />
+</p>
+
+
+## DB Schema
+
+<p align="left">
+    <img alt="Revenue Schema"
+        src="revenue-schema.png"
     />
 </p>
 

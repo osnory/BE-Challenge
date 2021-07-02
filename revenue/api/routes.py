@@ -37,7 +37,7 @@ def index():
     )
 
 
-@app.route("/hourly")
+@app.route("/sales/hourly")
 @error_handler
 def hourly():
     """
@@ -58,7 +58,7 @@ def hourly():
     return jsonify(data=body)
 
 
-@app.route("/daily")
+@app.route("/sales/daily")
 @error_handler
 def daily():
     """
@@ -74,7 +74,6 @@ def daily():
         "end": daily_params.end,
         "daily_breakdown": daily_breakdown,
         "total": sum(daily_breakdown.values()),
-
     }
 
     return jsonify(data=body)

@@ -20,8 +20,16 @@ Prerequisite:
   - Docker Compose 
 
 Run
-~~~~
 ``./make.sh``
+
+
+## Webserver structure
+
+<p align="left">
+    <img alt="Web Server Structure"
+        src="structure.svg"
+    />
+</p>
 
 ## Introduction ## 
 

@@ -20,6 +20,7 @@ Prerequisite:
   - Docker Compose 
 
 Run
+
 ``./make.sh``
 
 
@@ -27,7 +28,7 @@ Run
 
 <p align="left">
     <img alt="Web Server Structure"
-        src="structure.svg"
+        src="Dataflows.jpg"
     />
 </p>
 

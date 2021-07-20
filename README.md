@@ -1,4 +1,4 @@
-# BE-Challenge
+# ML-Challenge
 <p align="center">
     <img alt="Nory Logo"
         src="https://nory.ai/static/media/n-logo.34190c70.svg"

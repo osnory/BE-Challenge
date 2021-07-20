@@ -23,16 +23,6 @@ Run
 
 ``./make.sh``
 
-
-## Webserver Structure
-
-<p align="left">
-    <img alt="Web Server Structure"
-        src="Dataflows.jpg"
-    />
-</p>
-
-
 ## DB Schema
 
 <p align="left">
@@ -45,9 +35,9 @@ Run
 
 Congratulations on making it to the challenge stage of the interview process! 
 
-This challenge is designed to test your Software Enigneering skills, in particular back end servers. 
+This challenge is designed to test your ML Engineering skills. 
 
-It will likely take 2-3 hours total.  If you find it's taking longer than that, just wrap up what you have and finish off with some pseudo-code to explain what you would do next. Seeing how you prioritize under time restrictions is really useful too.
+It will likely take 4-5 hours total.  If you find it's taking longer than that, just wrap up what you have and finish off with some pseudo-code to explain what you would do next. Seeing how you prioritize under time restrictions is really useful too.
 
 After you complete this challenge we will have a meeting where you can discuss your approach, and you can share your results, thoughts and ideas. 
 
@@ -55,7 +45,7 @@ This challenge mimics the type of work we do at Nory, and so it should give you 
 
 ## **Challenge Overview**
 
-After designing the user journey, your product manager Jake decided that the next feature to be released will be to show customers their total sales.
+After designing the user journey, your product manager Jake decided that the next feature to be released will be to show customers predictions of their future sales revenue, so they can plan their week.
 
 Jake understands what the customer wants and what the product needs, but doesn't necessarily know what data looks like or what the api responses should look like. 
 
@@ -78,30 +68,38 @@ Branch Name | Branch ID
 | Nory Sushi |	352h67i328fh |
 
 
-Jake explained that each customer would like to see their total sales over several days periods or zoom into every day and see the breakdown. 
+Jake explained that each customer would like to see the next two weeks' sales forecast. They want to know how many sales and orders they will have on a weekly, daily and hourly basis.
 
 It's up to you to interpret how to get the correct api responses, and what those responses should look like.
 
-That said, one of the Front End engineers on your team, Lucy, was at the meeting, and has advised what the api endpoints should be called, and what requests to them will contain. 
+That said, one of the Front End engineers on your team, Lucy, was at the meeting, and has advised what the api endpoint should be called, and what requests to them will contain. 
 
-After some discussion, it was decided there are to be two endpoints: `/daily` and `/hourly`.
+After some discussion, it was decided there is to be one endpoint: `/predict`.
 
-For each of these endpoints, Lucy wants to be able to send a GET request with the query parameters `"branch_id"`, `"from"` and `"to"` (`"from"` and `"to"` both being dates in the format `"yyyy-mm-dd"`). 
+For this endpoint, Lucy wants to be able to send a GET request with the query parameters `"branch_id"`, `"from"` and `"to"` (`"from"` and `"to"` both being dates in the format `"yyyy-mm-dd"`). 
+
+
 
 A sample GET request that will hit your api is shown below:
-`https://nory/revenue?from=2021-02-04&to=2021-02-10&branch_id=352h67i328fh`
+`https://nory/precit?from=2021-02-04&to=2021-02-10&branch_id=352h67i328fh`
 
 If she can send GET requests with these parameters to those endpoints, and get the data that she needs, then she is happy to take it from there.
 
-From the meeting you know what each of these endpoints should do.
-
-Name | Function 
---- | --- |
-| /hourly | This endpoint will only ever be called when the end user is in "day view". In other words, the start date and end date will always be the same. This endpoint should return the revenue for each hourly slot in the day. So for example, all the orders between 13:00 and 13:59 contribute towards a single hourly slot, and all the orders between 14:00 and 14:59 contribute towards a single hourly slot. ||
-| /daily | This endpoint will be called when the end user is inspecting a branch's sales performance. They might be looking at the sales across a day, a week or even a month. This endpoint should return the total revenue across the period. The response should return the total for each day, and also the response should return the total for the full period.||
 
 ## The Task
-Your goal is to set up the endpoints that receive requests with specified query parameters and return responses with the required data in the format that you decide on.
+
+Your challenge is to predict the next two weeks' sales forecasting using real customer data, and serve the model via an api. But, we're super interested in your skillset as a machine learning engineer, so we have a restriction: __we want you to use neural networks to make your predictions__.
+
+We're interested in the full process, from EDA, through to experimenting and then validation of results. 
+
+But of course, no model is useful without inference. We have provided you the skeleton of a BE web application hosted in Docker that can serve HTTP requests. Don't worry too much about the details of the api, like load balancing and security. But we are very interested how you design your endpoints.
+
+So, we'd like you to create an api endpoint (or set of api endpoints) that can serve live inferences from your model.
+
+Feel free to assume that there is some other architecture making sure the version of the model used by the api is up to date; we're not looking for real time training. Just real time inference.
+
+
+Your task is to train a predictive model that can forecast sales up to two weeks ahead, and deploy this model on the api to accept GET requests for the forecasts.
 
 The application should 
 * Return correct responses for the provided data 
@@ -163,6 +161,5 @@ And of course, we want to hear your thoughts and answer any questions you have.
 So that's that. How does it sound? A whole lot of details, we know !
 
 **Oh, and one last thing... best of luck! We're really happy you've decided to take part in the challenge, and we look forward to seeing your epic solution.** 😎
-
 
 

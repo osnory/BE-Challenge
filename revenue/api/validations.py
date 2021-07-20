@@ -2,18 +2,6 @@ from revenue.api import errors, models
 from revenue.utils import date_utils
 
 
-def validate_request_params_hourly(params: dict):
-    start_str, branch_id = validate_params_exist(params, ("start", "branch_id"))
-    start = validate_date(start_str)
-    return models.HourlyParams(start=start, branch_id=branch_id)
-
-
-def validate_request_params_daily(params: dict):
-    start_str, end_str, branch_id = validate_params_exist(params, ("start", "end", "branch_id"))
-    start, end = validate_start_and_end_dates(start_str, end_str)
-    return models.DailyParams(start=start, end=end, branch_id=branch_id)
-
-
 def validate_params_exist(params, required_args):
     existing_args = [params.get(k) for k in required_args if k in params]
     if len(existing_args) < len(required_args):

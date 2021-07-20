@@ -5,39 +5,13 @@
     />
 </p>
 
-## Run
-### dev env
-Prerequisite: 
- - python3
- - mkvirtualenvwrapper
-
-Run  
-`` ./local.sh``
-
-### docker env
-Prerequisite: 
-  - Docker
-  - Docker Compose 
-
-Run
-
-``./make.sh``
-
-## DB Schema
-
-<p align="left">
-    <img alt="Revenue Schema"
-        src="revenue-schema.png"
-    />
-</p>
-
 ## Introduction ## 
 
 Congratulations on making it to the challenge stage of the interview process! 
 
 This challenge is designed to test your ML Engineering skills. 
 
-It will likely take 4-5 hours total.  If you find it's taking longer than that, just wrap up what you have and finish off with some pseudo-code to explain what you would do next. Seeing how you prioritize under time restrictions is really useful too.
+It will likely take 1, 2 days in total.  If you find it's taking longer than that, just wrap up what you have and finish off with some pseudo-code to explain what you would do next. Seeing how you prioritize under time restrictions is really useful too.
 
 After you complete this challenge we will have a meeting where you can discuss your approach, and you can share your results, thoughts and ideas. 
 
@@ -76,12 +50,12 @@ That said, one of the Front End engineers on your team, Lucy, was at the meeting
 
 After some discussion, it was decided there is to be one endpoint: `/predict`.
 
-For this endpoint, Lucy wants to be able to send a GET request with the query parameters `"branch_id"`, `"from"` and `"to"` (`"from"` and `"to"` both being dates in the format `"yyyy-mm-dd"`). 
+For this endpoint, Lucy wants to be able to send a GET request with the query parameters `"branch_id"`, `"start"` and `"end"` (`"start"` and `"end"` both being dates in the format `"yyyy-mm-dd"`). 
 
 
 
 A sample GET request that will hit your api is shown below:
-`https://nory/precit?from=2021-02-04&to=2021-02-10&branch_id=352h67i328fh`
+`https://nory/precit?start=2021-02-04&end=2021-02-10&branch_id=352h67i328fh`
 
 If she can send GET requests with these parameters to those endpoints, and get the data that she needs, then she is happy to take it from there.
 
@@ -108,31 +82,38 @@ The application should
 
 ### Resources
 
-Luckily for you, there is a template flask application that your teammate Sadu has created and that you can use, available in this repo. 
+There is data in the data folder. 
+Luckily for you, your teammate Sadu has created a web service that you can use, available in this repo. 
 
-#### Setup 
-For running locally run
-```shell
-mkvirtualenv bec --python=python3.9
-pip install -r requirements/base.txt
-cd revenue && flask db init && flask db migrate && flask db upgrade
-flask run
-```
+## Run
+### dev env
+Prerequisite: 
+ - python3
+ - mkvirtualenvwrapper
+
+Run  
+`` ./local.sh``
+
 The local application will be exposed on `http://0.0.0.0:5000/`
 
+### docker env
+Prerequisite: 
+  - Docker
+  - Docker Compose 
 
-To build a docker image
-```shell
-docker build -t revenue .
-docker run -dp 3000:3000 revenue
-```
+Run
 
+``./make.sh``
 The dockerized application will be exposed on `http://0.0.0.0:3000/`
 
-Note, that there is a sqlite DB configured to run with the application. If you build the docker application before changing the DB, you should run the db migrations before building the image. 
 
-### Data
-Available in the data folder
+## DB Schema
+
+<p align="left">
+    <img alt="Revenue Schema"
+        src="revenue-schema.png"
+    />
+</p>
 
 ### Tips 
 
